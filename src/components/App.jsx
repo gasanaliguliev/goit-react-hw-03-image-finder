@@ -7,7 +7,6 @@ import Button from './Button/Button';
 import Modal from './Modal/Modal';
 import './styles.css';
 
-
 export class App extends Component {
   state = {
     images: [],
@@ -15,6 +14,7 @@ export class App extends Component {
     page: 1,
     showModal: false,
     selectedImage: null,
+    totalHits: 0,
     isLoading: false,
   };
 
@@ -36,6 +36,7 @@ export class App extends Component {
       .then((response) => {
         this.setState((prevState) => ({
           images: [...prevState.images, ...response.data.hits],
+          totalHits: response.data.totalHits,
           page: prevState.page + 1,
         }));
       })
@@ -62,14 +63,14 @@ export class App extends Component {
   };
 
   render() {
-    const { images, isLoading, showModal, selectedImage } = this.state;
+    const { images, isLoading, showModal, selectedImage, totalHits } = this.state;
 
     return (
       <div className="App">
         <Searchbar onSubmit={this.handleSearchSubmit} />
         <ImageGallery images={images} onItemClick={this.handleImageClick} />
         {isLoading && <Loader />}
-        {images.length > 0 && !isLoading && (
+        {images.length > 0 && !isLoading && totalHits > images.length && (
           <Button onClick={this.fetchImages} />
         )}
         {showModal && (
@@ -81,4 +82,5 @@ export class App extends Component {
 }
 
 export default App;
+
 
